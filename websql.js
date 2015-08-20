@@ -16,21 +16,21 @@ WebSQLDB = {
             webSQLDB.db = db;
 
             return webSQLDB;
-          },
+          }
+}
 
-  this.prototype = {
-    createTable: function(name, options = {}) {
-                   var table = this.executeSql(WebSQLTable.createSQL(name, options));
+WebSQLDB.prototype = {
+  createTable: function(name, options = {}) {
+                 var table = this.executeSql(WebSQLTable.createSQL(name, options));
 
-                   this.tables.push(table);
-                 },
+                 this.tables.push(table);
+               },
 
-    executeSql: function(sqlStatement) {
-                  this.db.transaction(function (transaction) {
-                     transaction.executeSql(sqlStatement);
-                  });
-                }
-  }
+  executeSql: function(sqlStatement) {
+                this.db.transaction(function (transaction) {
+                   transaction.executeSql(sqlStatement);
+                });
+              }
 }
 
 WebSQLTable = {
@@ -41,10 +41,10 @@ WebSQLTable = {
             });
 
             return 'CREATE TABLE IF NOT EXISTS' + tableName + '(' + dbFields.join(', ') + ')';
-          },
+          }
+}
 
-  this.prototype = {
 
-  }
+WebSQLTable.prototype = {
 
 }
