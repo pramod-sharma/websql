@@ -96,11 +96,54 @@ WebSQLTable.prototype = {
     this.executeSql(insertionSQLStatment);
   },
 
-  
+  getQueryExecutor: function() {
+                      return new WebSQLQuery(this.db, this)
+                    },
 
   executeSql: function(sqlStatement) {
                 this.db.transaction(function(tx) {
                    tx.executeSql(sqlStatement);
                 });
               },
+}
+
+
+
+WebSQLQuery = function(db, table) {
+                this.db    = db;
+                this.table = table;
+                this.conditions = {};
+                this.selectFields = [];
+              }
+
+WebSQLQuery.prototype = {
+  where: function(conditions) {
+    this.conditions = conditions;
+  },
+
+  select: function(fields) {
+    this.selectFields = fields;
+  },
+
+  execute: function() {
+    var sqlStatement = generateQuery();
+    this.table.executeSql(sqlStatement);
+  },
+
+  generateQuery: function() {
+    var query = '',
+        selectionFields = (this.selectFields == []) ? '*' : this.selectFields.join(', '),
+        conditionsStatementArray = [],
+        conditionsStatement = '';
+
+    for (var key in this.conditions) {
+      conditionsStatementArray.push(key + ' = ' + this.conditions[key]);
+    }
+    conditionsStatement = conditionsStatementArray.join(' AND ');
+
+    query = 'Select ' + selectFields + ' FROM ' + this.table.name;
+    if !(conditionsStatement == '')
+      query += ' WHERE ' + conditionsStatement;
+    return query;
+  }
 }
